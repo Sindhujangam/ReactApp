@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import CityForm from './components/CityForm';
+import WeatherInfo from './components/WeatherInfo';
+import GeolocationComponent from './components/GeolocationCompo'; // Import GeolocationComponent
+import { setCityList } from './store/actions';
+import './App.css'; 
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    fetch('/city.list.json')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+        return response.json();
+      })
+      .then((data) => dispatch(setCityList(data)))
+      .catch((error) => console.error('Error loading city list:', error));
+  }, [dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <GeolocationComponent /> {/* Add GeolocationComponent */}
+      <CityForm />
+      <WeatherInfo />
     </div>
   );
 }
